@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { StyledPhonebook } from './ContactsPage.styled';
 import { useDispatch, useSelector } from 'react-redux';
 
