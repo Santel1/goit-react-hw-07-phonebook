@@ -17,6 +17,7 @@ import {
 } from 'redux/contactsSelectors';
 import { Loader } from 'components/Loader';
 import Error from 'components/Error';
+import { toast } from 'react-toastify';
 
 const ContactsPage = () => {
   const dispatch = useDispatch();
@@ -34,19 +35,32 @@ const ContactsPage = () => {
     event.preventDefault();
     const name = event.currentTarget.contactName.value;
     const phone = event.currentTarget.contactNumber.value;
-
     const newContact = {
       name,
       phone,
     };
 
+    if (contacts.some(contact => contact.name === newContact.name)) {
+      toast.warning(`${newContact.name} is already in contacts.`);
+      return;
+    } else if (contacts.some(contact => contact.phone === newContact.phone)) {
+      toast.warning(
+        `Contact with phone ${newContact.phone} is already in contacts.`
+      );
+      return;
+    }
+    if (isNaN(phone)) {
+      toast.warning('Phone must contain only numbers.');
+      return;
+    }
     dispatch(addNewContact(newContact));
-    console.log(newContact);
     event.currentTarget.reset();
+    toast.success('Contact added to phonebook');
   };
 
   const handleDeleteContact = contactId => {
     dispatch(deleteContact(contactId));
+    toast.success('Contact is deleted');
   };
 
   const handleFilterContacts = ({ target: { value } }) => {
@@ -74,7 +88,7 @@ const ContactsPage = () => {
           <span>Number</span>
           <input
             className="phonebookInput"
-            type="text"
+            type="tel"
             name="contactNumber"
             required
           />
